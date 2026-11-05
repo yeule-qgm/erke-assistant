@@ -1,0 +1,98 @@
+{
+  "_说明": "离线演练数据（python agent.py --offline 用）。时间支持 '+1.5h' 写法=距 _anchor 锚点 1.5 小时；锚点固定不动，保证各次运行算出的时间一致（否则会被动向比对误判为变更）。想刷新演示场景（比如让参加提醒再次触发）就更新 _anchor 为当前时间。",
+  "_anchor": "2026-09-21 16:40",
+  "activities": [
+    {
+      "id": "t001", "title": "Python 编程实战工作坊：写出你的第一个爬虫",
+      "desc": "零基础友好，从环境到能跑的爬虫，助教现场答疑。",
+      "start_time": "+74h", "deadline": "+48h", "location": "信息楼 B203", "status": "报名中",
+      "quota_total": 40, "quota_left": 31
+    },
+    {
+      "id": "t002", "title": "新生辩论赛·院系选拔赛",
+      "desc": "时事类辩题，优胜队代表学院出战校赛。",
+      "start_time": "+170h", "deadline": "+96h", "location": "活动中心 302", "status": "报名中",
+      "quota_total": 24, "quota_left": 18
+    },
+    {
+      "id": "t003", "title": "校史馆秋季志愿讲解员招募",
+      "desc": "培训后上岗，周末班，志愿时长全额认定。",
+      "start_time": "+240h", "deadline": "+120h", "location": "校史馆", "status": "报名中",
+      "quota_total": 10, "quota_left": 12
+    },
+    {
+      "id": "t004", "title": "校园黑客马拉松：48 小时从想法到 Demo",
+      "desc": "自由组队，技术导师驻场，云资源赞助。",
+      "start_time": "+400h", "deadline": "+200h", "location": "创业园路演厅", "status": "报名中",
+      "quota_total": 100, "quota_left": 63
+    },
+    {
+      "id": "t005", "title": "心理健康讲座：学业压力的自我调适",
+      "desc": "校心理中心主讲，现场有互动环节。",
+      "start_time": "+50h", "deadline": "+46h", "location": "教三 101", "status": "报名中",
+      "quota_total": 200, "quota_left": 155
+    },
+    {
+      "id": "t006", "title": "「秋之声」校园歌手大赛",
+      "desc": "初赛线上提交视频，决赛现场演出。",
+      "start_time": "+300h", "deadline": "+150h", "location": "大礼堂", "status": "报名中",
+      "quota_total": 50, "quota_left": 47
+    },
+    {
+      "id": "t007", "title": "创新创业大赛赛前宣讲会（已报名，用于测参加提醒）",
+      "desc": "往届金奖团队复盘选题与组队经验。",
+      "start_time": "+0.6h", "deadline": "+0.3h", "location": "图书馆报告厅", "status": "报名中",
+      "quota_total": 300, "quota_left": 120
+    },
+    {
+      "id": "t008", "title": "就业指导工作坊：简历门诊（已报名，用于测截止提醒）",
+      "desc": "一对一修改简历，需预约时段。",
+      "start_time": "+27h", "deadline": "+23h", "location": "就业中心", "status": "报名中",
+      "quota_total": 30, "quota_left": 22
+    },
+    {
+      "id": "t100", "title": "电影协会周常放映（中区）",
+      "desc": "每周放映经典与新作，片单以子项目形式发布。",
+      "start_time": "2026-08-31 19:00", "deadline": null, "location": "中区放映厅", "status": "报名中",
+      "quota_total": null, "quota_left": null, "pid": "", "category": "1"
+    }
+  ],
+  "_children": {
+    "_说明": "系列母活动的子项目夹具（ADR-0015 offline 演练）：键=母活动 id，行=内部格式（pid 由代码按母活动 id 回填，不读行内值）；时间支持 +Nh 相对锚点，场次类条目用绝对时间更直观。c3/c4 报名中未开始 → 演练应推『新场次』；c1/c2 已结束、c5 截止已过 → 只入账不推。t200 不在 activities 里=已下架母活动，凭账本快照仍轮询（决定 2 覆盖面）。",
+    "t100": [
+      {
+        "id": "c1", "title": "《七武士》放映", "desc": "已结束的历史场次。",
+        "start_time": "2026-10-06 19:00", "deadline": "2026-10-05 23:59", "location": "中区放映厅", "status": "已结束",
+        "quota_total": 20, "quota_left": 0
+      },
+      {
+        "id": "c2", "title": "《她》放映", "desc": "已结束的历史场次。",
+        "start_time": "2026-10-13 19:00", "deadline": "2026-10-12 23:59", "location": "中区放映厅", "status": "已结束",
+        "quota_total": 30, "quota_left": 4
+      },
+      {
+        "id": "c3", "title": "《罗斯》放映", "desc": "报名中的新场次。",
+        "start_time": "2026-11-06 19:00", "deadline": "2026-11-05 23:59", "location": "中区放映厅", "status": "报名中",
+        "quota_total": 45, "quota_left": 12
+      },
+      {
+        "id": "c4", "title": "《罪人》放映", "desc": "报名中的新场次。",
+        "start_time": "2026-11-07 19:00", "deadline": "2026-11-06 23:59", "location": "中区放映厅", "status": "报名中",
+        "quota_total": 40, "quota_left": 33
+      },
+      {
+        "id": "c5", "title": "《叶问》放映", "desc": "报名截止已过的新场次（只入账不推）。",
+        "start_time": "2026-11-08 19:00", "deadline": "2026-11-03 10:00", "location": "中区放映厅", "status": "报名中",
+        "quota_total": 50, "quota_left": 8
+      }
+    ],
+    "t200": [
+      {
+        "id": "c6", "title": "《随风而逝》放映", "desc": "已下架母活动下的报名中场次。",
+        "start_time": "2026-11-06 15:00", "deadline": "2026-11-05 23:59", "location": "高新放映厅", "status": "报名中",
+        "quota_total": 12, "quota_left": 3
+      }
+    ]
+  },
+  "registrations": ["t007", "t008"]
+}

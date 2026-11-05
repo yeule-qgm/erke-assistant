@@ -1,0 +1,19 @@
+# 运行产物（含个人数据，绝不入库）
+__pycache__/
+*.pyc
+*.tmp
+state/
+state-offline/
+logs/
+
+# 个人配置与偏好（首次使用复制 *.example 模板并改名）
+config.toml
+preferences.md
+preferences-seed.md
+themes.txt
+
+# 工作痕迹目录（开发与助手协作的本地工作区，不公开）
+.scratch/
+
+# 虚拟环境
+.venv/

@@ -1,0 +1,44 @@
+# 全部可调参数——改行为只动这里，不碰代码。
+# 密钥一律走环境变量（见 README 环境变量表），本文件不放任何密钥。
+# 使用：复制本文件为 config.toml 后按注释调整；每个参数都有合理范围校验，写错会在日志里大声提醒。
+
+[params]
+score_line = 7            # LLM 打分过线才推（1~10）
+quota_threshold = 10      # 剩余名额首次跌破该值时报告
+deadline_lead_hours = 24  # 报名截止提前多少小时提醒一次
+attend_lead_minutes = 120 # 活动开始提前多少分钟提醒（窗口要跨得动整点巡检，太短容易错过；已开始则不补发；参加提醒即时推送，不受推送时点限制）
+change_ttl_hours = 24     # 长期活动标题/简介变更动向的事件有效期（小时），过期即弃不补发
+deliver_hours = [12, 23]  # 固定推送时点（整点）；每天第一次有内容的巡检也会推一波
+first_push_min_hour = 7   # 每日首波最早时刻：凌晨巡检不再"首推"吵人（0 = 不设下限）
+removal_guard = true      # 关注移除护栏：单轮要移除超过一半且超过 10 条报名关注时全部保留并告警（防接口残缺名单误删）；去平台核对确认无误后改 false 放行一轮
+daily_budget = 3          # 每日推送条数上限（自然日零点重置；"该换票了"等系统告警不占预算）
+history_keep_days = 90    # 快照与事件登记的保留天数（超龄自动清理）
+feedback_window_hours = 48  # 反馈有效期（小时）：推送超过该时长后回复视为过期
+
+[scoring]
+# 加权合成评分（加法式）：合成分 = LLM 分 + keyword_weight × 关键词分，封顶 10；推送阈值仍看 score_line
+keyword_weight = 0.3      # 关键词分权重（0~1）；关键词分 = 偏好档案"关键词："行词表在标题(×2)/简介(×1)的命中，封顶 10；零命中时合成分 = LLM 分；改动下次巡检生效
+
+[curation]
+# LLM 自主调档的窗口与幅度上限——任何超限申请整单作废，失败不落盘下轮重试；改动下轮生效
+feedback_window_days = 30 # 调档时读的反馈流水滚动窗（天，1~365）：更早的反馈以偏好库蒸馏结论的形式在场，不重复喂
+decision_window_days = 7  # 调档时读的推送决策摘要窗口（天，1~365）：近几天推了什么/滤了什么，供模型对照反馈
+keyword_step = 3          # 单次调档关键词增/删各自的条数上限（1~20；加、删分开计）
+watch_step = 2            # 单次调档关注增/删各自的条数上限（1~20；只动 LLM 自动加的关注）
+snapshot_keep = 30        # 调档应用前快照的保留份数（1~365；state/backups/ 时间戳子目录，最老的先删；"撤销调档"回滚到最新一份）
+
+[feishu]
+# 飞书自建应用。密钥只走环境变量 ERKE_FEISHU_APP_ID / ERKE_FEISHU_APP_SECRET：
+# 两个齐备 = 飞书推送启用；都不配 = 推送降级为终端打印（离线演练同款，无需改代码）
+open_id = ""              # 可选：固定接收者 open_id；留空则在你第一次给机器人发消息时自动发现并缓存
+
+[llm]
+model = "deepseek-flash"  # 对话模型名（任何 OpenAI 兼容端点）
+base_url = "https://api.deepseek.com"  # OpenAI 兼容端点（SDK 自动拼 /chat/completions）
+
+[platform]
+base_url = "https://young.ustc.edu.cn/login/wisdom-group-learning-bg/"
+list_endpoint = "mobile/item/enrolmentList"              # 「报名中」列表接口
+registration_endpoint = "item/scParticipateItem/list"    # 「我的报名」清单接口
+children_endpoint = "item/scItem/selectSignChirdItem"    # 系列母活动的子项目清单接口（"Chird"是平台原始拼写，勿"修正"）
+max_children_per_series = 100                            # 脏数据护栏：单系列返回子项目数超限即拒收该系列并告警（1~500）
