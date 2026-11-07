@@ -245,6 +245,27 @@ def fetch_children(parent_ids: list[str], config: dict,
     return _children_real(parent_ids, url, {"X-Access-Token": token}, _limit(config))
 
 
+def fetch_enrolment(config: dict, offline: bool = False) -> list[dict]:
+    """『报名中』活动列表的独立取数（ADR-0017，MCP 查询面用）。返回内部格式列表。
+
+    巡检主链路不走本函数——fetch() 把列表/报名/子项目并入同一条总保险丝；
+    本函数供单独取数与 offline 夹具测试使用（fetch_children/refresh_quota 同款）。
+    护栏与巡检同源：翻页全量、success:false 当错误抛、total>5000 拒抓、
+    60s 保险丝（本端点正常 2~3 页，留出翻页余量）。"""
+    if offline:
+        acts, _, _, _ = _fetch_offline(config)
+        return acts
+    token = os.environ.get("ERKE_PLATFORM_TOKEN", "")
+    if not token:
+        raise FetchError("未设置 ERKE_PLATFORM_TOKEN（按 README『换票三步』获取）")
+    plat = config.get("platform", {})
+    base = plat.get("base_url", "https://young.ustc.edu.cn/login/wisdom-group-learning-bg/")
+    headers = {"X-Access-Token": token}
+    raw = _run_fused(60, lambda: _get_pages(
+        base + plat.get("list_endpoint", "mobile/item/enrolmentList"), headers))
+    return [_map_activity(r) for r in raw]
+
+
 def _limit(config: dict) -> int:
     """max_children_per_series 的容错读取：坏值回退缺省 100，下限 1（0=全拒收没意义）。"""
     try:

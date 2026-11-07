@@ -76,6 +76,7 @@ def _load_config(log: logging.Logger) -> dict:
            "platform": {"base_url": "https://young.ustc.edu.cn/login/wisdom-group-learning-bg/",
                         "children_endpoint": "item/scItem/selectSignChirdItem",
                         "max_children_per_series": 100},
+           "mcp": {"cache_ttl_seconds": 300},
            "feishu": {"open_id": ""}}
     try:
         with open(BASE / "config.toml", "rb") as f:
@@ -85,6 +86,7 @@ def _load_config(log: logging.Logger) -> dict:
         cfg["llm"].update(data.get("llm", {}))
         cfg["curation"].update(data.get("curation", {}))
         cfg["platform"].update(data.get("platform", {}))
+        cfg["mcp"].update(data.get("mcp", {}))
         cfg["feishu"].update(data.get("feishu", {}))
     except (OSError, tomllib.TOMLDecodeError) as e:
         log.warning(f"读取 config.toml 失败，用默认参数：{e!r}")
@@ -102,6 +104,10 @@ def _load_config(log: logging.Logger) -> dict:
     mc = cfg["platform"].get("max_children_per_series")   # [platform] 子项目护栏（ADR-0015）
     if not isinstance(mc, int) or isinstance(mc, bool) or not 1 <= mc <= 500:
         log.warning(f"参数 [platform] max_children_per_series={mc!r} 超出合理范围 [1, 500]，请检查 config.toml")
+    ttl = cfg["mcp"].get("cache_ttl_seconds")             # [mcp] 查询面节流（ADR-0017）
+    if not isinstance(ttl, int) or isinstance(ttl, bool) or not 60 <= ttl <= 3600:
+        log.warning(f"参数 [mcp] cache_ttl_seconds={ttl!r} 超出合理范围 [60, 3600]，已回缺省 300，请检查 config.toml")
+        cfg["mcp"]["cache_ttl_seconds"] = 300
     kw = cfg["scoring"].get("keyword_weight")
     if not isinstance(kw, (int, float)) or not 0 <= kw <= 1:
         log.warning(f"参数 [scoring] keyword_weight={kw!r} 应为 0~1 的数，请检查 config.toml")
